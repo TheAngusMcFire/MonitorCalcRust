@@ -1,3 +1,5 @@
+use std::env;
+
 struct MonitorInfo 
 {
     monitor_hight   : f64,
@@ -44,8 +46,20 @@ impl MonitorInfo
     }
 }
 
+fn print_args()
+{
+    // Prints each argument on a separate line
+    for argument in env::args() 
+    {
+        println!("{}", argument);
+    }
+}
+
 fn main() 
 {
+
+    print_args();
+    return;
     let mut nfo : MonitorInfo = MonitorInfo::new(1920, 1080, 24.0);
     nfo.calc_monitor_values();
     nfo.print(); 
