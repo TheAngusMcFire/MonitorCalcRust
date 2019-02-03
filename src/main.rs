@@ -28,12 +28,12 @@ impl MonitorInfo
 
     pub fn print(&self)
     {
-        println!("Monitor hight:    {}", self.monitor_hight);
-        println!("Monitor width:    {}", self.monitor_width);
-        println!("Monitor diagonal: {}", self.diagonal);
-        println!("Pixels hight:     {}", self.pixels_hight);
-        println!("Pixels width:     {}", self.pixels_width);
-        println!("Pixels per inch:  {}", self.pixels_per_inch);
+        println!("Monitor hight:    {}", self.monitor_hight   );
+        println!("Monitor width:    {}", self.monitor_width   );
+        println!("Monitor diagonal: {}", self.diagonal        );
+        println!("Pixels hight:     {}", self.pixels_hight    );
+        println!("Pixels width:     {}", self.pixels_width    );
+        println!("Pixels per inch:  {}", self.pixels_per_inch );
     }
 
     pub fn calc_monitor_values(&mut self)
