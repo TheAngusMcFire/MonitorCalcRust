@@ -1,4 +1,6 @@
 use std::env;
+use std::error;
+use std::fmt;
 
 struct MonitorInfo 
 {
@@ -11,9 +13,43 @@ struct MonitorInfo
     pixels_per_inch : u32,
 }
 
+#[derive(Debug, Clone)]
+struct GenericError
+{
+    msg : String
+}
+
+impl GenericError
+{
+    pub fn new(err_msg : String) -> GenericError
+    {    
+        return GenericError{msg : err_msg};
+    } 
+}
+
+impl fmt::Display for GenericError 
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result 
+    {
+        write!(f, "{}", self.msg)
+    }
+}
+
+impl error::Error for GenericError
+{
+    fn description(&self) -> &str 
+    {
+        "this is a generic error"
+    }
+
+    fn cause(&self) -> Option<&error::Error> 
+    {
+        None
+    }
+}
+
 impl MonitorInfo
 {
-
     pub fn new(px_hight : u32, px_width : u32, mon_diagonal : f64) -> MonitorInfo
     {
         return MonitorInfo 
@@ -46,21 +82,59 @@ impl MonitorInfo
     }
 }
 
-fn print_args()
+fn check_and_parse_args() -> Result<MonitorInfo, GenericError>
 {
-    // Prints each argument on a separate line
-    for argument in env::args() 
+    let argc = env::args().len();
+
+    if argc != 4
     {
-        println!("{}", argument);
+        return Result::Err(GenericError::new("Error to less arguments provided".to_string()));
     }
+
+    let args : Vec<String> = env::args().collect();
+
+    let px_x : u32;
+    let px_y : u32;
+    let diag : f64;
+
+    match args[1].parse::<u32>() 
+    {
+        Ok(result) => px_x = result, 
+        Err(_err) => return Result::Err(GenericError::new("Error while parsing px_x value".to_string())),
+    }
+
+    match args[2].parse::<u32>() 
+    {
+        Ok(result) => px_y = result,
+        Err(_err) => return Result::Err(GenericError::new("Error while parsing px_y value".to_string())),
+    }
+
+    match args[3].parse::<f64>() 
+    {
+        Ok(result) => diag = result,
+        Err(_err) => return Result::Err(GenericError::new("Error while parsing diag value".to_string())),
+    }
+
+    let mut tmp = MonitorInfo::new(px_y, px_x, diag);
+    tmp.calc_monitor_values();
+
+    return Ok(tmp);
 }
 
 fn main() 
 {
+    let ret_code = check_and_parse_args();
 
-    print_args();
-    return;
-    let mut nfo : MonitorInfo = MonitorInfo::new(1920, 1080, 24.0);
-    nfo.calc_monitor_values();
-    nfo.print(); 
+    match ret_code
+    {
+        Ok(result) =>
+        {
+            result.print();
+        }
+
+        Err(error) =>
+        {
+            println!("{}",error);
+        } 
+    } 
 }
