@@ -88,7 +88,7 @@ fn check_and_parse_args() -> Result<MonitorInfo, GenericError>
 
     if argc != 4
     {
-        return Result::Err(GenericError::new("Error to less arguments provided".to_string()));
+        return Result::Err(GenericError::new("Error wrong number of arguments provided".to_string()));
     }
 
     let args : Vec<String> = env::args().collect();
